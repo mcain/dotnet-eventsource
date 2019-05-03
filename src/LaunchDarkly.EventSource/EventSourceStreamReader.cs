@@ -39,6 +39,10 @@ namespace LaunchDarkly.EventSource
             {
                 _streamReader?.Dispose();
             }
+            catch (ObjectDisposedException)
+            {
+                // Do nothing...
+            }
             finally
             {
                 _streamReader = null;
