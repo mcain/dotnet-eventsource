@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LaunchDarkly.EventSource
@@ -22,9 +20,17 @@ namespace LaunchDarkly.EventSource
 
         public virtual async Task<string> ReadLineAsync()
         {
-            await Task.Yield();
+            try
+            {
+                await Task.Yield();
+                return await _streamReader.ReadLineAsync();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Do nothing            
+            }
 
-            return await _streamReader.ReadLineAsync();
+            return null;
         }
 
         public void Dispose()
@@ -47,7 +53,6 @@ namespace LaunchDarkly.EventSource
             {
                 _streamReader = null;
             }
-
         }
     }
 }
